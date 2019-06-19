@@ -14,6 +14,19 @@ from django.contrib.auth.models import UserManager
 
 # Create your models here.
 
+class UserManager(BaseUserManager):
+
+    def create_user(self, email, password=None, **extra_fields):
+        '''Creates a User with the given email and password'''
+        user = self.model(email=email, **extra_fields)
+        if password:
+            user.set_password(password)
+        user.save()
+        return user
+        
+    def create_superuser(self, email, password=None, **extra_fields):
+        return self.create_user(email, password, is_superuser=True, **extra_fields)
+
 """ Role Model """
 @python_2_unicode_compatible
 class Roles(models.Model):
@@ -35,9 +48,9 @@ class User(PermissionsMixin, AbstractBaseUser):
         default=timezone.now, editable=False)
     updated_at = models.DateTimeField(auto_now=True)
 
+    USERNAME_FIELD = 'email'
     objects = UserManager()
 
-    USERNAME_FIELD = 'email'
     class Meta:
         verbose_name = pgettext_lazy('User model', 'user')
         verbose_name_plural = pgettext_lazy('User model', 'users')

@@ -1,0 +1,17 @@
+*.py[cod]
+.*
+!.babelrc
+!.gitignore
+*.log
+*.pot
+*.pyc
+__pycache__/
+build/
+
+/venv/
+
+celerybeat.pid
+!*/__init__.py
+env.py
+*/migrations/*.py
+*/migrations/*.pyc
