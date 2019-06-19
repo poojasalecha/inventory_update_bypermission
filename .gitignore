@@ -13,5 +13,5 @@ build/
 celerybeat.pid
 !*/__init__.py
 env.py
-*/migrations/*.py
-*/migrations/*.pyc
+**/migrations/*.py
+**/migrations/*.pyc
