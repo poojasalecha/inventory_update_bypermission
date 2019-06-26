@@ -42,6 +42,21 @@ class BaseController(object):
         response =  JsonResponse(response, content_type='application/json', status=status_code)
         return response
 
+    
+    def respond_with_item(statusCode, data, transformer, access_token=None, is_auth= True):
+        response = {}
+        response['data'] = transformer.transform(data)
+        response['notification'] = {}    
+        response['notification']['hint'] = "Response Sent"
+        response['notification']['message'] = "Success"
+        response['notification']['code'] = "200"
+        response['notification']['type'] = "Success"
+        response['notification']['is_auth'] = is_auth
+        
+        response = JsonResponse(response, content_type='application/json', status=statusCode)
+        response['accessToken'] = access_token
+        return response
+
     """ respond_with_paginated_collection
     @param http status code, data, pagination data, transformer
     @return http response with status code

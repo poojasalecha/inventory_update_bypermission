@@ -1,11 +1,18 @@
+import json, jwt
 
+from django.db import transaction
+from django.contrib.auth import authenticate
 from django.views.decorators.csrf import csrf_exempt
+
+from rest_framework.decorators import api_view
+from rest_framework.settings import APISettings
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import permission_classes
+
+
 from userprofile.models import User
 from validator import *
 from basecontroller import BaseController 
-import json
-from django.db import transaction
-from django.contrib.auth import authenticate
 from transformer import UserTransformer
 
 
@@ -41,6 +48,7 @@ def signup(request):
 
 
 @csrf_exempt
+@api_view(['POST'])
 def login(request):
     if request.method == 'POST':
         credentials = {}
@@ -51,8 +59,11 @@ def login(request):
             credentials['password'] = data['password']
             if authenticate(username = data['email'], password=data['password']) is not None:
                 try:
+                    payload = APISettings.jwt_payload_handler(credentials)
+                    token = jwt.encode(payload, settings.SECRET_KEY)
+                    print token, 'token'
                     user = User.objects.get(email=data['email'])
-                    return BaseController().respond_with_item(200, user, UserTransformer)
+                    return BaseController().respond_with_item(200, user, UserTransformer, access_token=token)
                 except Exception as e:
                     print e
                 return BaseController().respond_with_error(200, 'oops..something is wrong. We will look into it right away')     

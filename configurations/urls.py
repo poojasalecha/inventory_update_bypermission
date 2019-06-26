@@ -20,6 +20,7 @@ from userprofile.urls import urlpatterns as userprofile_urls
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    # url(r'^api/', include('rest_framework_simplejwt.urls')),
     url(r'^product/',include(product_urls, namespace='product')),
     url(r'^profile/',include(userprofile_urls, namespace='profile')),
 
