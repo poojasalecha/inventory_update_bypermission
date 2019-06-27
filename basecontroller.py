@@ -43,7 +43,7 @@ class BaseController(object):
         return response
 
     
-    def respond_with_item(statusCode, data, transformer, access_token=None, is_auth= True):
+    def respond_with_item(self, statusCode, data, transformer, access_token=None, is_auth= True):
         response = {}
         response['data'] = transformer.transform(data)
         response['notification'] = {}    

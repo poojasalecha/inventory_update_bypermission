@@ -48,7 +48,7 @@ def signup(request):
 
 
 @csrf_exempt
-@api_view(['POST'])
+# @api_view(['POST'])
 def login(request):
     if request.method == 'POST':
         credentials = {}
@@ -59,11 +59,12 @@ def login(request):
             credentials['password'] = data['password']
             if authenticate(username = data['email'], password=data['password']) is not None:
                 try:
-                    payload = APISettings.jwt_payload_handler(credentials)
-                    token = jwt.encode(payload, settings.SECRET_KEY)
-                    print token, 'token'
+                    # payload = APISettings.jwt_payload_handler(credentials)
                     user = User.objects.get(email=data['email'])
-                    return BaseController().respond_with_item(200, user, UserTransformer, access_token=token)
+                    encoded_token = jwt.encode({'email': data['email'], 'userId': user.id }, 'SECRET', algorithm='HS256')
+                    encoded_token = "Bearer {0}".format(encoded_token)
+                    # token = jwt.encode(payload, settings.SECRET_KEY)
+                    return BaseController().respond_with_item(200, user, UserTransformer, encoded_token)
                 except Exception as e:
                     print e
                 return BaseController().respond_with_error(200, 'oops..something is wrong. We will look into it right away')     
